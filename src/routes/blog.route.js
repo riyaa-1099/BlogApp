@@ -1,71 +1,66 @@
-const express=require("express")
-const blogRouter=express.Router();
+const express = require("express");
+const blogRouter = express.Router();
 
-const authorise=require("../middleware/authorization")
-const Blogmodel=require("../models/blog.model")
-
+const { getAllBlogs, createBlog, updateBlog, deleteBlog } = require("../controllers/user/blog.controller");
 
 //--------------------------------------------------Getting all blogs
 
-blogRouter.get("/",async(req,res)=>{
-    const Blogs=await Blogmodel.find()
-    res.send({"All Blogs":Blogs,status:"success"})
-})
+blogRouter.get("/", async (req, res) => {
+  try {
+    const blogs = await getAllBlogs();
+    res.send({ "All Blogs": blogs, status: "success" });
+  } catch (err) {
+    console.log(err);
+    res.send({ msg: "something went wrong!!", status: "fail" });
+  }
+});
 
+blogRouter.post("/post", async (req, res) => {
+  const payload = req.body;
+  try {
+    const new_blog = await createBlog(payload);
+    res.send({ msg: "Blog Created successfully", status: "success", blog: new_blog });
+  } catch (err) {
+    console.log(err);
+    res.send({ msg: "something wrong!!", status: "fail" });
+  }
+});
 
-blogRouter.post("/post",authorise(['writer']),async(req,res)=>{
-const payload=req.body;
-try{
-    const new_blog=new Blogmodel(payload);
-    await new_blog.save();
-    res.send({"msg":"Blog Created successfully"})
-}
-catch(err){
-    console.log(err)
-    res.send({"msg":"something wrong!!"})
-}
-})
+//--------------------------------------------------updating route
 
+blogRouter.put("/patch/:blogID", async (req, res) => {
+  const blogID = req.params.blogID;
+  const payload = req.body;
+  const userID = req.body.userID;
+  try {
+    const blog = await updateBlog(blogID, userID, payload);
+    if (blog) {
+      res.send({ msg: "Blog updated successfully!!", status: "success" });
+    } else {
+      res.send({ msg: "Not authorized!!", status: "fail" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send({ msg: "something went wrong!!", status: "fail" });
+  }
+});
 
+//--------------------------------------------------Deleting route
 
-//--------------------------------------------------updating route 
+blogRouter.delete("/delete/:blogID", async (req, res) => {
+  const blogID = req.params.blogID;
+  const userID = req.body.userID;
+  try {
+    const result = await deleteBlog(blogID, userID);
+    if (result.deletedCount > 0) {
+      res.send({ msg: "Blog deleted successfully!!", status: "success" });
+    } else {
+      res.send({ msg: "Not authorized!!", status: "fail" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send({ msg: "something went wrong!!", status: "fail" });
+  }
+});
 
-blogRouter.patch("/patch/:blogID",authorise(['writer']),async(req,res)=>{
-const blogID=req.params.blogID;
-const payload=req.body;
-const userID=req.body.userID;
-
-const blogm=await Blogmodel.findOne({_id:blogID})
-//console.log(blogm)
-if(userID!==blogm.userID){
-    res.send({"msg":"Not authorised!!"}) 
-}
-else{
-
-    await Blogmodel.findByIdAndUpdate({_id:blogID},payload)
-    res.send({"msg":"Blog updated successfully!!"}) 
-}
-})
-
-
-//--------------------------------------------------Deleting route 
-
-blogRouter.delete("/delete/:blogID", authorise(["writer"]),async(req,res)=>{
-    const blogID=req.params.blogID;
-    const userID=req.body.userID;
-    const blog=await Blogmodel.findOne({_id:blogID})
-try{
-if(userID==blog.userID){
-      await Blogmodel.findByIdAndDelete({_id:blogID})
-    res.send({"msg":"Blog deleted successfully!!",status:"success"}) 
-}
-else if(userID!==blog.userID){
-    res.send({"msg":"Not authorised!!",status:"fail"}) 
-}
-}
-catch(err){
-    res.send({ msg: "error while deleting try again", status: "error" });
-}
-})
-
-module.exports=blogRouter;
+module.exports = blogRouter;

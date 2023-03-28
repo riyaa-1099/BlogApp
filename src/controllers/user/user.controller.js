@@ -1,8 +1,8 @@
 const {checkhashedpassword} = require("../helpers/hashingpassword");
 const { findByEmail, createUser } = require("../dao/user.dao");
 const  generateToken  = require("../services/token.service");
-const validateSignup=require("../validators/signupvalid")
-const validateSignin=require("../validators/signinvalid")
+const validateSignup = require("../validators/signupvalid")
+const validateSignin = require("../validators/signinvalid")
 
 module.exports = {
   signup: async function(req, res) {

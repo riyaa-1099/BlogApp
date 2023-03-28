@@ -1,19 +1,22 @@
 const mongoose=require("mongoose")
 
 const blogSchema=mongoose.Schema({
-topic:String,
-content:String,
-userID:{
+  title: {
+    type: String,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  userID: {
     type:mongoose.Schema.Types.ObjectId,
     ref:"blogusers"
 },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-
-
-})
+},
+{timestamps:true
+}
+)
 
 const Blogmodel=mongoose.model("blogs",blogSchema);
 
