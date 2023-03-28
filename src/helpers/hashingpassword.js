@@ -1,27 +1,26 @@
 const bcrypt = require("bcrypt");
 const generatetoken = require("../services/token.services");
 
-const hashingpassword = (password) => {
-  bcrypt.hash(password, 4, async function (err, hash) {
-    if (err) {
-      // console.log(err)
-      return false;
-    } else {
-      return generatetoken();
-    }
-  });
+const hashingpassword = async (password) => {
+ return bcrypt.hash(password, 4).then((hash, err) => {
+  if (err) {
+    console.log(err)
+    return false;
+  } else {
+    // console.log(">>>>>>>>>>>>. Inside function >>>>>>>>>>>>>.",hash)
+    return hash;
+  }
+})
 };
 
-const checkhashedpassword = (password, hashed_password) => {
-  bcrypt.compare(password, hashed_password, async function (err, result) {
-    if (err) {
-      // console.log(err)
-      return false;
-    } else {
-      if (result) {
-        return true;
-      }
-    }
-  });
+const checkhashedpassword = async (password, hashed_password) => {
+  try {
+    const result = await bcrypt.compare(password, hashed_password);
+    return result;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 };
-module.exports = { hashingpassword, checkhashedpassword };
+
+module.exports = { hashingpassword, checkhashedpassword }

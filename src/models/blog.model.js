@@ -13,6 +13,7 @@ const blogSchema = mongoose.Schema(
     userID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "blogusers",
+      required: true
     },
   },
   { timestamps: true }

@@ -14,7 +14,7 @@ blogRouter.get("/", getAllBlogs);
 
 blogRouter.post("/post", createBlog);
 
-blogRouter.put("/patch/:blogID", updateBlog);
+blogRouter.put("/put/:blogID", updateBlog);
 
 blogRouter.delete("/delete/:blogID", deleteBlog);
 

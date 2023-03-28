@@ -1,6 +1,6 @@
-const { checkhashedpassword } = require("../helpers/hashingpassword");
-const { findByEmail, createUser } = require("../dao/user.dao");
-const generateToken = require("../services/token.service");
+const { checkhashedpassword } = require("../../helpers/hashingpassword")
+const { findByEmail, createUser } = require("../../dao/user.dao");
+const generateToken = require("../../services/token.services");
 const validateSignup = require("../validators/signupvalid");
 const validateSignin = require("../validators/signinvalid");
 
@@ -17,11 +17,15 @@ module.exports = {
         try {
           await createUser(email, password, name);
           res.send({ msg: "Sign-up successful" });
-        } catch (err) {
+        } 
+        catch (err) {
           console.log(err);
           res.send({ msg: "Something went wrong" });
         }
       }
+    }
+    else{
+      res.send({msg:"Details not correctly entered"})
     }
   },
 
@@ -36,13 +40,15 @@ module.exports = {
 
     try {
       const user = await findByEmail(email);
+     
       if (user.length > 0) {
         const hashed_password = user[0].password;
+      
         const result = checkhashedpassword(password, hashed_password);
 
-        if (result === true) {
-          let token = generateToken(user[0]._id, user[0].role);
-
+        if (result) {
+          let token = generateToken(user[0]._id);
+console.log(token)
           res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
           res.send({ msg: "Login successful", token: token });
         } else {

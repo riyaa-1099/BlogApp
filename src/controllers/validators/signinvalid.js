@@ -1,4 +1,4 @@
-function validateSignin(name, email, password) {
+function validateSignin(email, password) {
   if (!email || !password) {
     return false;
   }

@@ -1,4 +1,4 @@
-const BlogDao = require("../dao/blog.dao");
+const BlogDao = require("../../dao/blog.dao");
 const validateBlog = require("../validators/validateContent");
 
 exports.getAllBlogs = async (req, res) => {

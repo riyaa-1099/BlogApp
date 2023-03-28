@@ -13,7 +13,7 @@ exports.createBlog = async (payload) => {
 exports.updateBlog = async (blogID, payload, userID) => {
   const blogm = await Blogmodel.findOne({ _id: blogID });
   if (userID !== blogm.userID) {
-    throw new Error("Not authorized");
+   return false
   }
   await Blogmodel.findByIdAndUpdate({ _id: blogID }, payload);
 };
@@ -23,6 +23,6 @@ exports.deleteBlog = async (blogID, userID) => {
   if (userID == blog.userID) {
     await Blogmodel.findByIdAndDelete({ _id: blogID });
   } else if (userID !== blog.userID) {
-    throw new Error("Not authorized");
+    return false;
   }
 };

@@ -6,7 +6,7 @@ function validateSignup(name, email, password) {
   }
 
   const emailValid = validateEmail(email);
-  if (!emailValid) {
+  if (emailValid===false) {
     return false;
   }
   return true;

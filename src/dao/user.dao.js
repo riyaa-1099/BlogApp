@@ -7,8 +7,12 @@ module.exports = {
   },
 
   createUser: async function (email, password, name) {
-    const hash = hashingpassword(password);
+
+    let hash = await hashingpassword(password);
+    // console.log(">>>>>>>>>>>>. Inside Dao >>>>>>>>>>>>>.",hash)
+    if(hash!==false){
     const current = new Usermodel({ email, password: hash, name });
     return await current.save();
+    }
   },
 };
