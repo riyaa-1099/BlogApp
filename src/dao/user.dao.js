@@ -1,5 +1,5 @@
 const Usermodel=require("../models/user.model")
-const {hashingpassword, checkhashedpassword} = require("../helpers/hashingpassword");
+const {hashingpassword} = require("../helpers/hashingpassword");
 
 module.exports = {
 

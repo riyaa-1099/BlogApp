@@ -1,5 +1,5 @@
-const {hashingpassword, checkhashedpassword} = require("../helpers/hashingpassword");
-const { findByEmail } = require("../dao/user.dao");
+const {checkhashedpassword} = require("../helpers/hashingpassword");
+const { findByEmail, createUser } = require("../dao/user.dao");
 const  generateToken  = require("../services/token.service");
 const validateSignup=require("../validators/signupvalid")
 const validateSignin=require("../validators/signinvalid")
@@ -29,7 +29,10 @@ if(value===true){
 
   signin: async function(req, res) {
     const { email, password } = req.body;
-    if (!email || !password) {
+
+    let value=validateSignin(email, password);
+if(value===false){
+
       res.send({ msg: "Complete your details", status: "fail" });
       return;
     }
@@ -39,6 +42,7 @@ if(value===true){
       if (user.length > 0) {
         const hashed_password = user[0].password;
         const result = checkhashedpassword(password, hashed_password);
+
         if (result === true) {
           let token = generateToken(user[0]._id, user[0].role);
 

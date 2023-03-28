@@ -4,7 +4,6 @@ const userSchema=mongoose.Schema({
 name:String,
 email:String,
 password:String,
-role:{type:String, enum:["writer","user"],default:"user"}
 
 },{timestamps:true})
 

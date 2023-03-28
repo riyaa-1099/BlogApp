@@ -9,7 +9,7 @@ const authentication = (req, res, next) => {
         if(decoded){
             const userID = decoded.userID
             req.body.userID = userID;
-            req.body.role=decoded.role;
+         
             next()
         }
         else{
