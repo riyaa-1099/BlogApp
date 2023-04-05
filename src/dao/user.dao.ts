@@ -4,6 +4,7 @@ import HashUtils from "../helpers/hashingpassword";
 let hashutils = new HashUtils();
 
 class UserService {
+    
 public findByEmail = async (email: string): Promise<IUser[]> => {
 return await Usermodel.find({ email });
 }

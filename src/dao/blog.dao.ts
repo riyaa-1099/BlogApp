@@ -1,9 +1,13 @@
 import { BlogModel, IBlog } from "../models/blog.model";
 
 class BlogService {
-public getAllBlogs = async (): Promise<IBlog[]> => {
-return await BlogModel.find();
-}
+  public getAllBlogs = async (page: number, limit: number): Promise<{ blogs: IBlog[]; count: number }> => {
+    const skip = (page - 1) * limit;
+    const blogs = await BlogModel.find().skip(skip).limit(limit);
+    const count = await BlogModel.countDocuments();
+    return { blogs, count };
+  };
+
 
 public createBlog = async (payload: IBlog): Promise<void> => {
 const newBlog = new BlogModel(payload);
@@ -34,7 +38,6 @@ else{
 
 public deleteBlog = async (blogID: string, userID: string): Promise<boolean> => {
 const blog = await BlogModel.findOne({ _id: blogID });
-
 
 if (!blog) {
   return false;

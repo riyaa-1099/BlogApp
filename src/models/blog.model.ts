@@ -4,6 +4,7 @@ interface IBlog extends Document {
   title: string;
   content: string;
   userID: mongoose.Schema.Types.ObjectId;
+  image:string;
 }
 
 const blogSchema: Schema = new Schema(
@@ -15,6 +16,10 @@ const blogSchema: Schema = new Schema(
     content: {
       type: String,
       required: true,
+    },
+    image: {
+      type: String
+     
     },
     userID: {
       type: mongoose.Schema.Types.ObjectId,

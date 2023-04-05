@@ -4,11 +4,15 @@ import AuthenticationMiddleware from "./src/middlewares/authentication";
 import connection from "./src/config/db";
 import userRouter from "./src/routes/user.route";
 import blogRouter from "./src/routes/blog.route";
-let auth = new AuthenticationMiddleware();
+import cookieParser from 'cookie-parser';
 
 const app = express();
-app.use(express.json());
 app.use(cors({ origin: "*" }));
+app.use(express.json());
+app.use(cookieParser());
+
+
+let auth = new AuthenticationMiddleware();
 
 app.get("/", (req: Request, res: Response) => {
   res.send({ msg: "Welcome" });

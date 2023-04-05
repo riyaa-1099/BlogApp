@@ -1,7 +1,7 @@
-import HashUtils from "../helpers/hashingpassword"
+import HashUtils from "../helpers/hashingpassword";
 import UserService from "../dao/user.dao";
 import TokenGenerator from "../services/token.services";
-import SignupValidator from "./validators/signupvalid"
+import SignupValidator from "./validators/signupvalid";
 import SigninValidator from "./validators/signinvalid";
 import { Request, Response } from "express";
 
@@ -11,10 +11,8 @@ let tokengenerate = new TokenGenerator();
 let userservice = new UserService();
 let hashutils = new HashUtils();
 
-
 class AuthController {
-
-  public signup=async(req: Request, res: Response): Promise<void> => {
+  public signup = async (req: Request, res: Response): Promise<void> => {
     const { email, password, name } = req.body;
 
     const value = signupvalidator.validateSignup(name, email, password);
@@ -34,9 +32,9 @@ class AuthController {
     } else {
       res.send({ msg: "Details not correctly entered" });
     }
-  }
+  };
 
-  public signin=async(req: Request, res: Response): Promise<void>=> {
+  public signin = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
     let value = signinvalidator.validate(email, password);
@@ -51,28 +49,35 @@ class AuthController {
       if (user.length > 0) {
         const hashed_password = user[0].password;
 
-        const result = await hashutils.checkhashedpassword(password, hashed_password);
+        const result = await hashutils.checkhashedpassword(
+          password,
+          hashed_password
+        );
 
-        if (result===true) {
+        if (result === true) {
           let token = tokengenerate.generate(user[0]._id);
-          console.log(token);
+          // console.log(token);
           res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
+
           res.send({ msg: "Login successful", token: token });
         } else {
           res.send({ msg: "Wrong password" });
         }
+      } else {
+        res.send({ msg: "user does not exist", status: "fail" });
+        return;
       }
     } catch (err) {
       console.log(err);
       console.log({ msg: "Something went wrong" });
     }
-  }
+  };
 
-  public logout = async(req: Request, res: Response): Promise<void>=> {
+  public logout = async (req: Request, res: Response): Promise<void> => {
     res.clearCookie("token");
-  }
-
+    //delete req.headers['authorization'];
+    res.status(200).send({ message: "Logout successful" });
+  };
 }
-
 
 export default AuthController;
